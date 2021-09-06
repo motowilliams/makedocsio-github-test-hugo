@@ -1,0 +1,50 @@
+name: Makedocs-Generation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs\/**'
+
+jobs:
+  docker_publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docs\/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}
+
+  makedocs-publish:
+    needs: docker_publish
+    runs-on: ubuntu-latest
+    container: ghcr.io/${{ github.repository }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build Docs
+        run: |
+          export DOCS_SRC_PATH\=docs
+          build
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs\/site
+          publish_branch: gh-pages
