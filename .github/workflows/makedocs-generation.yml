@@ -4,10 +4,10 @@ on:
   push:
     branches: [main]
     paths:
-      - 'docs\/**'
+      - "docs/**"
 
 jobs:
-  docker_publish:
+  makedocs_docker_publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,13 +25,13 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: docs\/Dockerfile
+          file: docs/Dockerfile
           push: true
           tags: |
             ghcr.io/${{ github.repository }}
 
-  makedocs-publish:
-    needs: docker_publish
+  pages:
+    needs: makedocs_docker_publish
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}
 
@@ -40,11 +40,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Build Docs
         run: |
-          export DOCS_SRC_PATH\=docs
+          export DOCS_SRC_PATH=docs
           build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs\/site
+          publish_dir: ./docs/site
           publish_branch: gh-pages

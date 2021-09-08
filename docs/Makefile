@@ -3,7 +3,7 @@ export DOCS_SRC ?= docs
 export PUBLISH_DIR ?= public
 export REPO_URL ?= https://github.com/motowilliams/makedocsio-github-test-pwsh
 export SITE_DIR ?= site
-export SITE_NAME ?= makedocsio-github-test-pwsh
+export SITE_NAME ?= github-pwsh
 export PROTOCOL ?= http
 export DOMAIN_NAME ?= 127.0.0.1:8000
 export SITE_URL ?= $(PROTOCOL)://$(DOMAIN_NAME)/
@@ -19,9 +19,9 @@ endif
 export BASH_CMD := $(SHELL) -c
 export COMMIT_HASH ?= $(shell [[ -d ".git" ]] && git rev-parse HEAD)
 export REPO_ROOT := $(shell [[ -z "${CI}" ]] && echo '/app' || echo $(PWD))
-export VERSION ?= $(shell [[ -d ".git" ]] && git tag --sort=committerdate | grep -E '[0-9]' | tail -1 || echo 0.0.0)
+export VERSION ?= $(shell [[ -d ".git" ]] && git tag --sort=v:refname | grep -E '[0-9]' | tail -1 || echo 0.0.0)
 
-export IMAGE_NAME ?= makedocsio-github-test-pwsh-builder
+export IMAGE_NAME ?= github-pwsh-builder
 export IMAGE_VERSION ?= latest
 export IMAGE_TAG = $(IMAGE_NAME):$(IMAGE_VERSION)
 export ADDITIONAL_BUILD_ARGS ?=

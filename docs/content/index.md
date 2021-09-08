@@ -1,6 +1,6 @@
-# Welcome to makedocsio-github-test-pwsh
+# Welcome to github-pwsh
 
-> Rename or change the content of this file at `docs/content/index.md`
+> Rename or change the content of this file at `docs\content/index.md`
   to get started creating project documentation
 
 ## Project Structure
@@ -15,7 +15,7 @@ docs/
  - mkdocs.yml
 ```
 
-Your documenation content is placed in `docs/content`. These are your markdown files and images. Standard markdown rules apply here.
+Your documenation content is placed in `docs\content/`. These are your markdown files and images. Standard markdown rules apply here.
 
 At `docs/mkdocs.yml` is your configuration for your <a href="https://www.mkdocs.org/user-guide/configuration/" target="_blank">https://www.mkdocs.org</a>
 
@@ -31,11 +31,11 @@ You can update the site attributes via the configuration site via the configurat
 
 or override them via make
 ```
-make build_docs SITE_NAME="makedocsio-github-test-pwsh"
+make build_docs SITE_NAME="${SITE_NAME}"
 ```
 
 ## Building Your Site
-This project is configured with a Make and has a few tasks created or added too your existing Makefile.
+This project is configured with a Make and has a few tasks created or added to your existing Makefile.
 
 ### Source
 ```
