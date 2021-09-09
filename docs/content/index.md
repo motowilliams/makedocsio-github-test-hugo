@@ -8,7 +8,7 @@
 ```
 Makefile
 docs\
- - content/
+ - content\
     - index.md
  - Dockerfile
  - Makefile
