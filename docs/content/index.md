@@ -1,13 +1,13 @@
 # Welcome to github-pwsh
 
-> Rename or change the content of this file at `docs\content/index.md`
+> Rename or change the content of this file at `docs\content\index.md`
   to get started creating project documentation
 
 ## Project Structure
 
 ```
 Makefile
-docs/
+docs\
  - content/
     - index.md
  - Dockerfile
@@ -15,9 +15,9 @@ docs/
  - mkdocs.yml
 ```
 
-Your documenation content is placed in `docs\content/`. These are your markdown files and images. Standard markdown rules apply here.
+Your documenation content is placed in `docs\content\`. These are your markdown files and images. Standard markdown rules apply here.
 
-At `docs/mkdocs.yml` is your configuration for your <a href="https://www.mkdocs.org/user-guide/configuration/" target="_blank">https://www.mkdocs.org</a>
+At `docs\mkdocs.yml` is your configuration for your <a href="https://www.mkdocs.org/user-guide/configuration/" target="_blank">https://www.mkdocs.org</a>
 
 ```
 {{ include_file('mkdocs.yml') }}
