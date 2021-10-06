@@ -41,6 +41,7 @@ jobs:
       - name: Build Docs
         run: |
           export DOCS_SRC_PATH=docs
+          printenv | sort
           make docs_build
           make docs_publish
       - name: Deploy
