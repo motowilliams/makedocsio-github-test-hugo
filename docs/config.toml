@@ -1,1 +1,2 @@
 theme = 'book'
+baseURL = '//motowilliams.github.io/makedocsio-github-test-hugo/'
