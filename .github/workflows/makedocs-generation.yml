@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "docs/**"
+  workflow_dispatch:
 
 jobs:
   hugo_docker_publish:
