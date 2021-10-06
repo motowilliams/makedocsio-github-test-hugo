@@ -9,7 +9,8 @@ PWD := $(shell pwd)
 endif
 
 export BASH_CMD := $(SHELL) -c
-export REPO_ROOT := $(shell [[ -z "${CI}" ]] && [[ -z "${GITHUB_ACTIONS}" ]] && echo '/app' || echo $(PWD); IS_CI=true )
+export REPO_ROOT := $(shell [[ -z "${CI}" ]] && [[ -z "${GITHUB_ACTIONS}" ]] && echo '/app' || echo $(PWD) )
+export IS_CI := $(shell [[ -z "${CI}" && -z "${GITHUB_ACTIONS}" ]] && echo "false" || echo "true" )
 export VERSION ?= $(shell [[ -d ".git" ]] && git tag --sort=v:refname | grep -E '[0-9]' | tail -1 || echo 0.0.0)
 
 export IMAGE_NAME ?= makedocsio-$(GENERATOR)
@@ -18,9 +19,9 @@ export IMAGE_TAG = $(IMAGE_NAME):$(IMAGE_VERSION)
 export ADDITIONAL_BUILD_ARGS ?=
 export LOCAL_PORT ?= 1313
 
-DOCS_ROOT_DIR=docs
+export DOCS_ROOT_DIR=docs
 
-ifdef IS_CI
+ifeq ($(IS_CI),true)
 	export IMAGE_TAG=
 	export DOCKER_COMMAND :=
 	export IMAGE_NAME :=
@@ -28,8 +29,7 @@ else
 	export DOCKER_COMMAND := docker run -it \
 		-v $(PWD):$(REPO_ROOT) \
 		--name $(IMAGE_NAME) \
-		--rm \
-		-w $(REPO_ROOT)
+		--rm 
 endif
 
 docker_build:
