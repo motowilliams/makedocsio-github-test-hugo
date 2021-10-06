@@ -23,6 +23,3 @@ ENV HUGO_VERSION="0.88.1"
 RUN curl -sL https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_Linux-64bit.tar.gz --output /tmp/hugo.tar.gz && \
     tar -xf /tmp/hugo.tar.gz -C /usr/local/bin && \
     rm -rf /tmp/*
-
-RUN adduser --disabled-password --gecos '' genericuser
-USER genericuser

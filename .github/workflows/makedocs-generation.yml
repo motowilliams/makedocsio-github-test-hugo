@@ -34,14 +34,10 @@ jobs:
   pages:
     needs: hugo_docker_publish
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/${{ github.repository }}
-      options: --user genericuser
+    container: ghcr.io/${{ github.repository }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docs
         run: |
           export DOCS_SRC_PATH=docs
