@@ -40,6 +40,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docs
         run: |
           export DOCS_SRC_PATH=docs
