@@ -34,8 +34,9 @@ jobs:
   pages:
     needs: hugo_docker_publish
     runs-on: ubuntu-latest
-    container: ghcr.io/${{ github.repository }}
-
+    container:
+      image: ghcr.io/${{ github.repository }}
+      options: --user genericuser
     steps:
       - name: Checkout
         uses: actions/checkout@v2
