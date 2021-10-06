@@ -34,7 +34,7 @@ else
 endif
 
 docker_build:
-	docker build --pull $(ADDITIONAL_BUILD_ARGS) -t $(IMAGE_TAG) . -f $(REPO_ROOT)/$(DOCS_ROOT_DIR)/Dockerfile
+	docker build --pull $(ADDITIONAL_BUILD_ARGS) -t $(IMAGE_TAG) . -f $(DOCS_ROOT_DIR)/Dockerfile
 
 debug: ## Runs the docker image interactively for debugging purposes
 	@$(DOCKER_COMMAND) $(ADDITIONAL_BUILD_ARGS) $(IMAGE_TAG) $(CMD)
@@ -44,7 +44,7 @@ docs_build:
 	$(DOCKER_COMMAND) $(IMAGE_TAG) $(BASH_CMD) '$(CMD)'
 
 docs_publish:
-	$(eval CMD := mkdir -p $(REPO_ROOT)/public && cp -R $(REPO_ROOT)/$(DOCS_ROOT_DIR)/public/* $(REPO_ROOT)/public)
+	$(eval CMD := mkdir -p $(REPO_ROOT)/site && cp -R $(REPO_ROOT)/$(DOCS_ROOT_DIR)/public/* $(REPO_ROOT)/site)
 	$(DOCKER_COMMAND) $(IMAGE_TAG) $(BASH_CMD) '$(CMD)'
 
 docs_serve:
