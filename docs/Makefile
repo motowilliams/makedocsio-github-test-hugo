@@ -1,93 +1,59 @@
-export DOCS_DIR_NAME ?= content
-export DOCS_SRC ?= docs
-export PUBLISH_DIR ?= public
-export REPO_URL ?= https://github.com/motowilliams/makedocsio-github-test-pwsh
-export SITE_DIR ?= site
-export SITE_NAME ?= github-pwsh
-export PROTOCOL ?= http
-export DOMAIN_NAME ?= 127.0.0.1:8000
-export SITE_URL ?= $(PROTOCOL)://$(DOMAIN_NAME)/
-export LOCAL_PORT ?= 8000
+GENERATOR=hugo
 
 ifeq ($(OS),Windows_NT)
 SHELL := '/usr/bin/sh.exe'
 PWD := $(shell sh.exe -c pwd)
 else
 SHELL := /bin/bash
+PWD := $(shell pwd)
 endif
 
 export BASH_CMD := $(SHELL) -c
-export COMMIT_HASH ?= $(shell [[ -d ".git" ]] && git rev-parse HEAD)
-export REPO_ROOT := $(shell [[ -z "${CI}" ]] && echo '/app' || echo $(PWD))
+export REPO_ROOT := $(shell [[ -n "${CI}" ]] && echo $(PWD) || echo '/app' )
 export VERSION ?= $(shell [[ -d ".git" ]] && git tag --sort=v:refname | grep -E '[0-9]' | tail -1 || echo 0.0.0)
 
-export IMAGE_NAME ?= github-pwsh-builder
+export IMAGE_NAME ?= makedocsio-$(GENERATOR)
 export IMAGE_VERSION ?= latest
 export IMAGE_TAG = $(IMAGE_NAME):$(IMAGE_VERSION)
 export ADDITIONAL_BUILD_ARGS ?=
+export LOCAL_PORT ?= 1313
 
-export DOCS_SRC_PATH=$(REPO_ROOT)/$(DOCS_SRC)
-export PUBLISH_PATH := $(REPO_ROOT)/$(PUBLISH_DIR)
-
-export CONTENT_SITE_PATH=$(DOCS_SRC_PATH)/$(DOCS_DIR_NAME)
-export DOCS_SITE_PATH=$(DOCS_SRC_PATH)/$(SITE_DIR)
+DOCS_ROOT_DIR=docs
 
 ifdef CI
 	export IMAGE_TAG=
 	export DOCKER_COMMAND :=
+	export IMAGE_NAME :=
 else
 	export DOCKER_COMMAND := docker run -it \
 		-v $(PWD):$(REPO_ROOT) \
-		--env CI=TRUE \
-		--env COMMIT_HASH=$(COMMIT_HASH) \
-		--env COMMIT_HASH_LENGTH=$(COMMIT_HASH_LENGTH) \
-		--env CONTENT_SITE_PATH=$(CONTENT_SITE_PATH) \
-		--env DOCS_DIR=$(DOCS_DIR_NAME) \
-		--env DOCS_SITE_PATH=$(DOCS_SITE_PATH) \
-		--env DOCS_SRC_PATH=$(DOCS_SRC_PATH) \
-		--env LOCAL_PORT=$(LOCAL_PORT) \
-		--env PUBLISH_PATH=$(PUBLISH_PATH) \
-		--env REPO_ROOT=$(REPO_ROOT) \
-		--env REPO_URL=$(REPO_URL) \
-		--env SITE_DIR=$(SITE_DIR) \
-		--env SITE_NAME="$(SITE_NAME)" \
-		--env SITE_URL=$(SITE_URL) \
 		--name $(IMAGE_NAME) \
 		--rm \
-		-w $(DOCS_SRC_PATH)
+		-w $(REPO_ROOT)
 endif
 
-docs_clean: ## Removes the content artifacts directories and archive
-	$(eval CMD := rm -rf $(SITE_DIR).zip && rm -rf $(SITE_DIR) && rm -rf $(DOCS_SITE_PATH) && rm -rf $(PUBLISH_PATH) )
-	@echo "Cleaning $(SITE_DIR).zip & $(SITE_DIR) in $(SITE_DIR)"
+docker_build:
+	docker build --pull $(ADDITIONAL_BUILD_ARGS) -t $(IMAGE_TAG) . -f $(REPO_ROOT)/$(DOCS_ROOT_DIR)/Dockerfile
+
+debug: ## Runs the docker image interactively for debugging purposes
+	@$(DOCKER_COMMAND) $(ADDITIONAL_BUILD_ARGS) $(IMAGE_TAG) $(CMD)
+
+docs_build:
+	$(eval CMD := cd $(REPO_ROOT)/$(DOCS_ROOT_DIR) && hugo -D)
 	$(DOCKER_COMMAND) $(IMAGE_TAG) $(BASH_CMD) '$(CMD)'
 
-docs_build: ## Builds the content to the 'site' directory
-	$(eval CMD := build )
-	@echo "Building"
+docs_publish:
+	$(eval CMD := mkdir -p $(REPO_ROOT)/public && cp -R $(REPO_ROOT)/$(DOCS_ROOT_DIR)/public/* $(REPO_ROOT)/public)
 	$(DOCKER_COMMAND) $(IMAGE_TAG) $(BASH_CMD) '$(CMD)'
 
-docs_publish: ## Builds the content to the 'site' directory
+docs_serve:
 	$(eval CMD := \
-	mkdir -p $(PUBLISH_PATH) && \
-	cp -R $(DOCS_SITE_PATH)/* $(PUBLISH_PATH)/ \
-	)
-	@echo "Publishing"
-	$(DOCKER_COMMAND) $(IMAGE_TAG) $(BASH_CMD) '$(CMD)'
-
-docs_debug: ## Runs the docker image interactively for debugging purposes
-	@$(DOCKER_COMMAND) $(IMAGE_TAG) $(CMD)
-
-docs_docker_build: ## Build the docker image used for these make targets not within DIND
-	docker build --pull $(ADDITIONAL_BUILD_ARGS) -t $(IMAGE_TAG) $(DOCS_SRC)/. -f $(DOCS_SRC)/Dockerfile
-
-docs_package: build_docs ## Builds the content to a compressed archive
-	$(eval CMD := cd $(DOCS_SRC_PATH) && zip -r ../$(SITE_DIR).zip ./)
-	@echo "Packaging"
-	$(DOCKER_COMMAND) $(IMAGE_TAG) $(BASH_CMD) '$(CMD)'
-
-docs_serve: ## Runs the mkdocs server
-	$(eval CMD := serve)
+	cd $(REPO_ROOT)/$(DOCS_ROOT_DIR) && \
+	hugo server \
+	--bind 0.0.0.0 \
+	--navigateToChanged \
+	--templateMetrics \
+	--buildDrafts)
 	$(DOCKER_COMMAND) -p $(LOCAL_PORT):$(LOCAL_PORT) --expose $(LOCAL_PORT) $(IMAGE_TAG) $(BASH_CMD) '$(CMD)'
 
 print-%: ; @echo $*=$($*)

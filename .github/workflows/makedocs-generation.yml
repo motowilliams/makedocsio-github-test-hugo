@@ -1,4 +1,4 @@
-name: Makedocs-Generation
+name: hugo-Generation
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - "docs/**"
 
 jobs:
-  makedocs_docker_publish:
+  hugo_docker_publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,7 +31,7 @@ jobs:
             ghcr.io/${{ github.repository }}
 
   pages:
-    needs: makedocs_docker_publish
+    needs: hugo_docker_publish
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}
 
