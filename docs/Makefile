@@ -29,7 +29,8 @@ else
 	export DOCKER_COMMAND := docker run -it \
 		-v $(PWD):$(REPO_ROOT) \
 		--name $(IMAGE_NAME) \
-		--rm 
+		--rm \
+		-w $(REPO_ROOT)
 endif
 
 docker_build:

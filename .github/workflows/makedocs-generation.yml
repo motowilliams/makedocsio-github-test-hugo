@@ -35,13 +35,13 @@ jobs:
     needs: hugo_docker_publish
     runs-on: ubuntu-latest
     container: ghcr.io/${{ github.repository }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build Docs
         run: |
           export DOCS_SRC_PATH=docs
-          printenv | sort
           make docs_build
           make docs_publish
       - name: Deploy
