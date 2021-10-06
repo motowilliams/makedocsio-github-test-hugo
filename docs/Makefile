@@ -9,7 +9,7 @@ PWD := $(shell pwd)
 endif
 
 export BASH_CMD := $(SHELL) -c
-export REPO_ROOT := $(shell [[ -z "${CI}" ]] && echo $(PWD) || echo '/app' )
+export REPO_ROOT := $(shell [[ -z "${CI}" ]] && [[ -z "${GITHUB_ACTIONS}" ]] && echo '/app' || echo $(PWD); IS_CI=true )
 export VERSION ?= $(shell [[ -d ".git" ]] && git tag --sort=v:refname | grep -E '[0-9]' | tail -1 || echo 0.0.0)
 
 export IMAGE_NAME ?= makedocsio-$(GENERATOR)
@@ -20,7 +20,7 @@ export LOCAL_PORT ?= 1313
 
 DOCS_ROOT_DIR=docs
 
-ifdef CI
+ifdef IS_CI
 	export IMAGE_TAG=
 	export DOCKER_COMMAND :=
 	export IMAGE_NAME :=
