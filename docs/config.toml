@@ -1,2 +1,2 @@
 theme = 'book'
-baseURL = '//motowilliams.github.io/makedocsio-github-test-hugo/'
+#baseURL = '//example.com/optional_subdirectory/'
