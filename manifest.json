@@ -1,14 +1,14 @@
 {
   "name": "",
   "short_name": "",
-  "start_url": "/makedocsio-github-test-hugo/",
-  "scope": "/makedocsio-github-test-hugo/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "/makedocsio-github-test-hugo/favicon.svg",
+      "src": "/favicon.svg",
       "sizes": "512x512"
     }
   ]
