@@ -1,4 +1,7 @@
 GENERATOR=hugo
+export DOCS_ROOT_DIR=docs
+export BUILD_OUTPUT_DIR:=public
+export PUBLISH_DIR:=site
 
 ifeq ($(OS),Windows_NT)
 SHELL := '/usr/bin/sh.exe'
@@ -18,9 +21,6 @@ export IMAGE_VERSION ?= latest
 export IMAGE_TAG = $(IMAGE_NAME):$(IMAGE_VERSION)
 export ADDITIONAL_BUILD_ARGS ?=
 export LOCAL_PORT ?= 1313
-
-export DOCS_ROOT_DIR=docs
-export PUBLISH_DIR:=public
 
 ifeq ($(IS_CI),true)
 	export IMAGE_TAG=
@@ -45,7 +45,7 @@ docs_build:
 	$(DOCKER_COMMAND) $(IMAGE_TAG) $(BASH_CMD) '$(CMD)'
 
 docs_publish:
-	$(eval CMD := mkdir -p $(REPO_ROOT)/$(PUBLISH_DIR) && cp -R $(REPO_ROOT)/$(DOCS_ROOT_DIR)/public/* $(REPO_ROOT)/$(PUBLISH_DIR))
+	$(eval CMD := mkdir -p $(REPO_ROOT)/$(PUBLISH_DIR) && cp -R $(REPO_ROOT)/$(DOCS_ROOT_DIR)/$(BUILD_OUTPUT_DIR)/* $(REPO_ROOT)/$(PUBLISH_DIR))
 	$(DOCKER_COMMAND) $(IMAGE_TAG) $(BASH_CMD) '$(CMD)'
 
 docs_serve:
