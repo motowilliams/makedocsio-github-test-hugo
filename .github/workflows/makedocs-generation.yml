@@ -42,8 +42,8 @@ jobs:
       - name: Build Docs
         run: |
           export DOCS_SRC_PATH=docs
-          make docs_build
-          make docs_publish
+          make PUBLISH_DIR=site docs_build
+          make PUBLISH_DIR=site docs_publish
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:

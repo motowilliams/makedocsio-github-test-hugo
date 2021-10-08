@@ -20,6 +20,7 @@ export ADDITIONAL_BUILD_ARGS ?=
 export LOCAL_PORT ?= 1313
 
 export DOCS_ROOT_DIR=docs
+export PUBLISH_DIR:=public
 
 ifeq ($(IS_CI),true)
 	export IMAGE_TAG=
@@ -44,7 +45,7 @@ docs_build:
 	$(DOCKER_COMMAND) $(IMAGE_TAG) $(BASH_CMD) '$(CMD)'
 
 docs_publish:
-	$(eval CMD := mkdir -p $(REPO_ROOT)/site && cp -R $(REPO_ROOT)/$(DOCS_ROOT_DIR)/public/* $(REPO_ROOT)/site)
+	$(eval CMD := mkdir -p $(REPO_ROOT)/$(PUBLISH_DIR) && cp -R $(REPO_ROOT)/$(DOCS_ROOT_DIR)/public/* $(REPO_ROOT)/$(PUBLISH_DIR))
 	$(DOCKER_COMMAND) $(IMAGE_TAG) $(BASH_CMD) '$(CMD)'
 
 docs_serve:
