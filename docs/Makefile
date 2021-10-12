@@ -34,7 +34,7 @@ else
 		-w $(REPO_ROOT)
 endif
 
-docker_build:
+docs_docker_build:
 	docker build --pull $(ADDITIONAL_BUILD_ARGS) -t $(IMAGE_TAG) . -f $(DOCS_ROOT_DIR)/Dockerfile
 
 debug: ## Runs the docker image interactively for debugging purposes
